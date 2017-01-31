@@ -1,0 +1,16 @@
+<h1 class="example-h1">Dropdown</h1>
+
+<h2 class="example-h2">Standard Implementation (select box replacement)</h2>
+<example>
+  <dropdown options="::$ctrl.locales"
+            selected="$ctrl.currentLocale"
+            on-select="$ctrl.setLocale()"></dropdown>
+</example>
+
+<h2 class="example-h2">Navigation Menu</h2>
+<example>
+  <dropdown options="::$ctrl.navItems"
+            nav="true"
+            class="inverted"
+            label="Nav Menu"></dropdown>
+</example>

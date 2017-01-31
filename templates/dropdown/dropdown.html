@@ -1,0 +1,27 @@
+<link rel="stylesheet" href="../../../../Users/curt/Downloads/yuzi/style.styl">
+<button class="{{::$ctrl.toggleClass}}"
+        id="{{::$ctrl.toggleId}}"
+        aria-haspopup="true"
+        aria-expanded="{{$ctrl.show}}"
+        aria-controls="{{::$ctrl.optionsId}}"
+        ng-class="{'dropdown-open': $ctrl.show}"
+        ng-click="$ctrl.toggle()">
+  <span class="sr-only">Selected option: </span>
+  <span translate>{{$ctrl.options[$ctrl.selectedIndex].label}}</span>
+  <i class="icon-triangle-down dropdown-arrow" role="presentation"></i>
+</button>
+<ul class="ng-hide {{::$ctrl.optionsClass}}"
+    id="{{::$ctrl.optionsId}}"
+    role="group"
+    aria-expanded="{{$ctrl.show}}"
+    aria-labelledby="{{::$ctrl.toggleId}}"
+    ng-show="$ctrl.show">
+  <li role="button"
+      tabindex="0"
+      class="{{::$ctrl.optionClass}}"
+      ng-class="{selected: $index === $ctrl.selectedIndex}"
+      ng-click="$ctrl.selectOption(option)"
+      ng-repeat="option in $ctrl.options"
+      value="{{::option.value}}"
+      translate>{{::option.label}}</li>
+</ul>

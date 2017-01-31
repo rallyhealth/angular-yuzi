@@ -1,0 +1,21 @@
+<button class="{{::$ctrl.toggleClass}}"
+        id="{{::$ctrl.toggleId}}"
+        aria-haspopup="true"
+        aria-expanded="{{$ctrl.show}}"
+        aria-controls="{{::$ctrl.optionsId}}"
+        ng-class="{'dropdown-open': $ctrl.show}"
+        ng-click="$ctrl.toggle()">
+  <span translate>{{::$ctrl.label}}</span>
+  <i class="icon-triangle-down dropdown-arrow" role="presentation"></i>
+</button>
+<div class="ng-hide {{::$ctrl.optionsClass}}"
+    id="{{::$ctrl.optionsId}}"
+    role="group"
+    aria-expanded="{{$ctrl.show}}"
+    aria-labelledby="{{::$ctrl.toggleId}}"
+    ng-show="$ctrl.show">
+  <a class="{{::$ctrl.optionClass}}"
+     ng-repeat="option in $ctrl.options"
+     ng-href="{{::option.value}}"
+     translate>{{::option.label}}</a>
+</div>

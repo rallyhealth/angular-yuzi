@@ -1,0 +1,28 @@
+<button class="{{$dropdown.toggleClass}}"
+        id="{{$dropdown.toggleId}}"
+        aria-haspopup="true"
+        aria-expanded="{{$dropdown.show}}"
+        aria-controls="{{$dropdown.optionsId}}"
+        ng-class="{'dropdown-open': $dropdown.show}"
+        ng-click="$dropdown.toggle()"
+        track="toggle-{{$dropdown.label}}">
+  <span class="sr-only">Selected option: </span>
+  <span translate>{{$dropdown.options[$dropdown.selectedIndex].label}}</span>
+  <i class="icon-triangle-down dropdown-arrow" role="presentation"></i>
+</button>
+<ul class="ng-hide {{::$dropdown.optionsClass}}"
+    id="{{::$dropdown.optionsId}}"
+    role="group"
+    aria-expanded="{{$dropdown.show}}"
+    aria-labelledby="{{::$dropdown.toggleId}}"
+    ng-show="$dropdown.show">
+  <li class="{{$dropdown.optionClass}}"
+      role="button"
+      tabindex="0"
+      ng-class="{selected: $index === $dropdown.selectedIndex}"
+      ng-click="$dropdown.selectOption(option)"
+      ng-repeat="option in $dropdown.options"
+      value="{{::option.value}}"
+      track="option-{{::option.label}}"
+      translate>{{::option.label}}</li>
+</ul>
