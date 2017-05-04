@@ -1,0 +1,155 @@
+clr-primary ?= #E97706
+clr-border ?= #D8D8D8
+doc-max-width ?= 1224px
+modal-width ?= 768px
+modal-max-height ?= 540px
+
+p
+  font-size 1.25em
+  font-weight 300
+  line-height 1.3
+  margin-bottom 1em
+
+.uz-modal-fullscreen
+  animation modal-fade-in .8s normal forwards cubic-bezier(0.250, 0.460, 0.450, 0.940)
+  background #FFF
+  .uz-modal-content
+    align(horizontal)
+    animation modal-fs-animate-in .8s normal forwards cubic-bezier(0.250, 0.460, 0.450, 0.940)
+    display flex
+    flex-direction column
+    height 100%
+    top 0
+    width 100%
+  .uz-modal-body,
+  .uz-modal-header-content
+    center()
+    max-width doc-max-width
+    width 100%
+  .uz-modal-body
+    flex 2
+    margin-bottom 0
+    margin-top 0
+    padding-bottom 40px
+    padding-top 40px
+  .uz-modal-close-btn
+    right 15px
+
+.uz-modal-hide
+  display none
+  animation modal-fade-out .4s normal forwards cubic-bezier(0.250, 0.460, 0.450, 0.940) !important
+
+.uz-modal-small
+  background rgba(#000, .6)
+  .uz-modal-content
+    align(both)
+    animation modal-sm-animate-in .8s normal forwards cubic-bezier(0.250, 0.460, 0.450, 0.940)
+    max-height modal-max-height
+    width modal-width
+  .uz-modal-animate-out
+    animation modal-sm-animate-out .4s normal forwards cubic-bezier(0.250, 0.460, 0.450, 0.940)
+  .uz-modal-body
+    max-height 360px
+  .uz-modal-close-btn
+    right 30px
+
+.uz-modal-container
+  height 100vh
+  left 0
+  position fixed
+  top 0
+  width 100vw
+  z-index 3
+
+.uz-modal-content
+  background-color #FFF
+  max-width 100vw
+  padding 0
+
+.uz-modal-header
+  border-bottom 1px solid clr-border
+
+.uz-modal-header-content
+  padding 20px 30px
+  position relative
+  *
+    vertical-align top
+  h1
+    font-size 2.5em
+    font-weight 300
+    line-height 60px
+    margin 0
+    padding-right 60px
+  h2
+    margin-top 1em
+
+.uz-modal-close-btn
+  background white
+  border 2px solid clr-primary
+  border-radius 30px
+  box-sizing border-box
+  color clr-primary
+  cursor pointer
+  height 60px
+  outline 0
+  padding 0
+  position absolute
+  text-align center
+  top 20px
+  transition all .2s
+  width 60px
+  .icon-close
+    align(both)
+    font-size 0
+    &:before
+      font-size 60px
+  &:hover,
+  &:focus
+    background lighten(clr-primary, 90%)
+  &:active
+    background clr-primary
+    color white
+
+.uz-modal-body
+  border-top 1px solid #FFF
+  margin 40px 0
+  overflow auto
+  padding 0 30px
+
+.uz-modal-no-title
+  border-bottom 0
+
+body.uz-modal-open
+  overflow hidden
+
+@keyframes modal-sm-animate-in
+  0%
+    opacity 0
+    top 55%
+  100%
+    opacity 1
+    top 50%
+
+@keyframes modal-sm-animate-out
+  0%
+    transform translate(-50%, -50%) scale(1)
+  100%
+    transform translate(-50%, -50%) scale(.95)
+
+@keyframes modal-fs-animate-in
+  0%
+    top 10%
+  100%
+    top 0
+
+@keyframes modal-fade-in
+  0%
+    opacity 0
+  100%
+    opacity 1
+
+@keyframes modal-fade-out
+  0%
+    opacity 1
+  100%
+    opacity 0

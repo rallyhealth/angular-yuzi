@@ -1,4 +1,9 @@
 .idea/
-node_modules
-build/
-examples/build/
+node_modules/
+dist/*
+!dist/package.json
+src/**/*.css
+src/**/*.js
+src/**/*.js.map
+src/**/*.d.ts
+.DS_Store

@@ -1,0 +1,20 @@
+<div class="uz-modal-container" role="dialog"
+     [class.uz-modal-hide]="closing"
+     [class.uz-modal-fullscreen]="fullscreen"
+     [class.uz-modal-small]="!fullscreen">
+  <div class="uz-modal-content">
+    <header class="uz-modal-header" [class.uz-modal-no-title]="!title">
+      <div class="uz-modal-header-content">
+        <h1 id="uz-modal-header" *ngIf="title">{{title}}</h1>
+        <button class="uz-modal-close-btn" (click)="close()" autofocus>
+          <i class="icon-close" aria-hidden="true"></i>
+          <span class="sr-only">Go back to previous content</span>
+        </button>
+      </div>
+    </header>
+    <div class="uz-modal-body" aria-labeledby="uz-modal-header">
+      <router-outlet name="modal"></router-outlet>
+    </div>
+  </div>
+</div>
+

@@ -1,16 +1,16 @@
 {
-  "name": "angular-yuzi",
-  "version": "0.1.0",
+  "name": "@rally/angular-yuzi",
+  "version": "0.2.0",
   "description": "A fully accessible and customizable common ui library for the web.",
-  "main": "src/yuzi.ts",
-  "scripts": {
-    "build": "webpack --config webpack.config.js",
-    "examples": "webpack --config webpack.examples.js",
-    "dev": "npm run examples | ./node_modules/.bin/webpack-dev-server  --config webpack.examples.js"
-  },
+  "author": "Rally Health, Inc.",
+  "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rallyhealth/angular-yuzi.git"
+    "url": "https://github.com/rallyhealth/angular-yuzi.git"
+  },
+  "homepage": "https://github.com/rallyhealth/angular-yuzi",
+  "bugs": {
+    "url": "https://github.com/rallyhealth/angular-yuzi/issues"
   },
   "keywords": [
     "accessible",
@@ -20,33 +20,42 @@
     "508",
     "wcag"
   ],
-  "author": "Rally Health, Inc.",
-  "bugs": {
-    "url": "https://github.com/rallyhealth/angular-yuziissues"
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "npm run ngc && npm run ng-inline && npm run rollup",
+    "clean": "del 'dist/**/!(package.json)' src/**/*.js src/**/*.js.map src/**/*.d.ts src/**/*.css",
+    "copyfiles": "copyfiles README.md src/**/*.css src/**/*.html dist",
+    "ng-inline": "ng2-inline -o ./ -r dist/**/*.component.js",
+    "ngc": "ngc -p tsconfig.json",
+    "prebuild": "npm run clean && npm run stylus && npm run copyfiles",
+    "rollup": "rollup -c rollup.config.js",
+    "stylus": "stylus src/**/*.styl --use jeet"
   },
-  "homepage": "https://github.com/rallyhealth/angular-yuzi#readme",
   "dependencies": {
-    "angular": "^1.6.1",
-    "angular-translate": "^2.13.1",
-    "jquery": "^3.1.1",
-    "rxjs": "5.0.3"
+    "@angular/common": "^4.1.0",
+    "@angular/compiler": "^4.1.0",
+    "@angular/compiler-cli": "^4.1.0",
+    "@angular/core": "^4.1.0",
+    "@angular/platform-browser": "^4.1.0",
+    "@angular/router": "^4.1.0",
+    "core-js": "^2.4.1",
+    "rxjs": "^5.3.1",
+    "zone.js": "^0.8.9"
   },
   "devDependencies": {
-    "@types/angular": "^1.6.2",
-    "@types/jquery": "^2.0.39",
-    "css-loader": "^0.26.1",
-    "html-loader": "^0.4.4",
-    "jquery": "^3.1.1",
-    "kouto-swiss": "^1.0.0",
-    "ngtemplate-loader": "^1.3.1",
-    "path": "^0.12.7",
-    "style-loader": "^0.13.1",
+    "@angular/cli": "^1.0.1",
+    "angular2-inline-template-style": "^1.1.0",
+    "copyfiles": "^1.2.0",
+    "del-cli": "^0.2.1",
+    "jeet": "^7.1.0",
+    "kouto-swiss": "^1.1.0",
+    "rollup": "^0.41.6",
+    "rollup-plugin-angular-inline": "^1.0.0",
+    "rollup-plugin-commonjs": "^8.0.2",
+    "rollup-plugin-node-resolve": "^3.0.0",
+    "rollup-plugin-uglify": "^1.0.2",
     "stylus": "^0.54.5",
-    "stylus-loader": "^2.4.0",
-    "ts-loader": "^2.0.0",
-    "typescript": "~2.1.5",
-    "webpack": "^2.2.0",
-    "webpack-dev-server": "^1.16.2",
-    "webpack-livereload-plugin": "^0.10.0"
+    "tslint": "^5.2.0",
+    "typescript": "^2.3.2"
   }
 }

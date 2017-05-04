@@ -4,10 +4,34 @@ there, but not all of them are optimized for accessibility. The goal of yuzi is 
 everyone without sacrificing visual appeal. Angular-yuzi accomplishes this goal for projects using the AngularJS framework.
 
 ## Installation
-`npm install angular-yuzi --save`
+`npm install @rally/angular-yuzi --save`
 
-## Running examples locally
-1. Clone this repository
-2. Navigate to the project root directory and run `npm install`
-3. Run `npm run dev`
-4. Navigate to [http://localhost:8080](http://localhost:8080)
+## Features
+
+### Modal
+The yuzi modal is route-driven. It will add a named router outlet called, "modal". 
+
+At the top of your root component's template add:
+```html
+<uz-modal></uz-modal>
+```
+
+To create a new modal route, add the following config object to your routing module:
+```ts
+{
+  path: 'foobar',
+  component: FoobarComponent,
+  outlet: 'modal', // the modal component implements this outlet
+  data: { // optional
+    modal: {
+      title: 'Some fancy title'
+      fullscreen: false
+    }
+  }
+}
+```
+
+To link to this route from your template:
+```html
+<a [routerLink]="['', { outlets: { modal: ['foobar'] } }]">Click me for modalz</a>
+```
