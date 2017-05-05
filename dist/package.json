@@ -1,9 +1,12 @@
 {
   "name": "@rally/angular-yuzi",
-  "version": "0.2.0",
+  "version": "0.2.1-0",
   "description": "A fully accessible and customizable common ui library for the web.",
   "author": "Rally Health, Inc.",
   "license": "MIT",
+  "publishConfig": {
+    "registry": "https://artifacts.werally.in/artifactory/api/npm/npm-local"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/rallyhealth/angular-yuzi.git"
