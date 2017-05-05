@@ -24,8 +24,8 @@
     "wcag"
   ],
   "main": "bundles/yuzi.umd.js",
-  "module": "index.js",
-  "typings": "index.d.ts",
+  "module": "src/index.js",
+  "typings": "src/index.d.ts",
   "peerDependencies": {
     "@angular/common": "^4.1.0",
     "@angular/compiler": "^4.1.0",

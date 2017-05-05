@@ -1,8 +1,10 @@
 import { AfterViewChecked, Component, ElementRef, HostListener, OnInit } from '@angular/core';
 import { ActivatedRouteSnapshot, Router, RoutesRecognized } from '@angular/router';
+import { ModalService, ModalStatus } from './modal.service';
 
 @Component({
   selector: 'uz-modal',
+  exportAs: 'uzModal',
   styleUrls: ['./modal.component.css'],
   templateUrl: './modal.component.html'
 })
@@ -40,9 +42,11 @@ export class ModalComponent implements OnInit, AfterViewChecked {
 
   private newModalDetected: boolean;
   private previouslyFocusedElement: HTMLElement;
+  private route: ActivatedRouteSnapshot;
 
   constructor(
     private elementRef: ElementRef,
+    private modalService: ModalService,
     private router: Router
   ) {}
 
@@ -52,11 +56,23 @@ export class ModalComponent implements OnInit, AfterViewChecked {
       .filter(event => event instanceof RoutesRecognized)
       .flatMap((event: RoutesRecognized) => event.state.root.children)
       .do((snapshot: ActivatedRouteSnapshot) => this.closed = snapshot.outlet !== 'modal')
-      .filter(snapshot => snapshot.outlet === 'modal' && snapshot.data['modal'] && snapshot.data['modal'])
-      .do(snapshot => this.newModalDetected = true)
-      .do(snapshot => this.title = snapshot.data['modal']['title'])
-      .do(snapshot => this.fullscreen = snapshot.data['modal']['fullscreen'])
+      .filter(snapshot => snapshot.outlet === 'modal')
+      .do(snapshot => {
+        const hasRouteData = (prop: string) =>
+        snapshot.data && snapshot.data.modal && typeof snapshot.data.modal[prop] !== 'undefined';
+
+        this.newModalDetected = true;
+        this.title = hasRouteData('title') ? snapshot.data.modal.title : undefined;
+        this.fullscreen = hasRouteData('fullscreen') ? snapshot.data.modal.fullscreen : false;
+        this.route = snapshot;
+      })
       .subscribe();
+
+    this.modalService.statusChange.subscribe(status => {
+      if (status === ModalStatus.Closed) {
+        this.close();
+      }
+    });
   }
 
   ngAfterViewChecked() {
@@ -71,30 +87,12 @@ export class ModalComponent implements OnInit, AfterViewChecked {
     this.closing = true;
     this.previouslyFocusedElement.focus();
     setTimeout(() => {
-      this.router.navigate([{ outlets: { modal: null } }]);
-      this.closed = true;
-      this.closing = false;
+      this.router.navigate([{ outlets: { modal: null } }], { queryParams: this.route.queryParams })
+        .then(() => {
+          this.closed = true;
+          this.closing = false;
+        });
     }, 400);
-  }
-
-  setFirstFocus() {
-    const element = this.elementRef.nativeElement;
-    const autoFocusElements: HTMLElement[] = [].slice.call(element.querySelectorAll('*[autofocus]'));
-
-    if (autoFocusElements.length > 0) {
-      // Get the last defined autofocus element
-      const lastAutoFocusElement = autoFocusElements[autoFocusElements.length - 1] as HTMLElement;
-      lastAutoFocusElement.focus();
-
-      if (document.activeElement === lastAutoFocusElement) {
-        return;
-      }
-    }
-
-    const tabElements = ModalComponent.getTabElements(element);
-    if (tabElements.length > 0) {
-      tabElements[0].focus();
-    }
   }
 
   @HostListener('document:keydown', ['$event'])
@@ -108,6 +106,7 @@ export class ModalComponent implements OnInit, AfterViewChecked {
       case 9: // tab
         this.trapFocus(event);
         break;
+      default: return;
     }
   }
 
@@ -130,6 +129,17 @@ export class ModalComponent implements OnInit, AfterViewChecked {
     }
   }
 
+  private setFirstFocus() {
+    const element = this.elementRef.nativeElement;
+    const autoFocusElements: HTMLElement[] = [].slice.call(element.querySelectorAll('*[autofocus]'));
+
+    if (autoFocusElements.length > 0) {
+      // Get the last defined autofocus element
+      const lastAutoFocusElement = autoFocusElements[autoFocusElements.length - 1] as HTMLElement;
+      this.setFocus(lastAutoFocusElement);
+    }
+  }
+
   private trapFocus(event: KeyboardEvent) {
     const modal = this.elementRef.nativeElement;
     const tabElements = ModalComponent.getTabElements(modal);
@@ -143,5 +153,10 @@ export class ModalComponent implements OnInit, AfterViewChecked {
       firstTab.focus();
       event.preventDefault();
     }
+  }
+
+  // Angular 4's renderer no longer supports invokeElementMethod, so we need to set focus another way
+  private setFocus(element: HTMLElement) {
+    setTimeout(() => element.focus(), 100);
   }
 }

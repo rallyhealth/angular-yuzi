@@ -20,7 +20,8 @@
     "508",
     "wcag"
   ],
-  "main": "src/index.ts",
+  "main": "./src/index.ts",
+  "module": "./src/index.ts",
   "scripts": {
     "build": "npm run ngc && npm run ng-inline && npm run rollup",
     "clean": "del 'dist/**/!(package.json)' src/**/*.js src/**/*.js.map src/**/*.d.ts src/**/*.css",
