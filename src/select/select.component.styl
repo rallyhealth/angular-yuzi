@@ -1,0 +1,51 @@
+clr-primary ?= #E97706
+clr-black ?= #2D2D39
+clr-grey-lt ?= #D8D8D8
+clr-grey-dk ?= #757588
+transition-time ?= .2s
+
+:host
+  display inline-block
+  position relative
+  text-align left
+
+.uz-select-toggle
+  background white
+  border 1px solid clr-grey-lt
+  border-radius 0
+  box-shadow none
+  box-sizing border-box
+  color clr-black
+  cursor pointer
+  display inline-block
+  font-size 1em
+  font-weight 500
+  padding 12px calc(35px + 1em) 12px 20px
+  position relative
+  transition all transition-time
+  z-index 1
+  &:hover,
+  &:focus
+    border-color clr-primary
+    box-shadow 0 0 0 1px clr-primary
+    outline 0
+  &.uz-select-open .uz-select-arrow
+    top calc(50% + 2px)
+    transform rotate(180deg)
+
+.uz-select-arrow
+  display inline-block
+  line-height 0
+  margin-left 5px
+  position absolute
+  right 20px
+  top 50%
+  transform rotate(0), translateY(-50%);
+  transition all transition-time
+
+.uz-select-options
+  border 1px solid clr-primary
+  left 0
+  min-width 100%
+  position absolute
+  z-index 1

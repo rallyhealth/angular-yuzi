@@ -1,8 +1,11 @@
 import { NgModule } from '@angular/core';
+
 import { ModalModule } from './modal/modal.module';
+import { SelectModule } from './select/select.module';
 
 const yuziModules = [
-  ModalModule
+  ModalModule,
+  SelectModule
 ];
 
 @NgModule({

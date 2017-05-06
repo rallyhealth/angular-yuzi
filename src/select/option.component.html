@@ -1,0 +1,10 @@
+<button class="uz-option"
+        type="button"
+        tabindex="0"
+        [class.uz-option-selected]="selected"
+        [class.uz-option-disabled]="disabled"
+        [attr.aria-selected]="selected"
+        [attr.aria-disabled]="disabled"
+        (click)="toggle()">
+  <ng-content></ng-content>
+</button>
