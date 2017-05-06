@@ -61,6 +61,7 @@ export class OptionComponent implements OnInit {
       this.selected = true;
     }
 
+    this.select.change.emit(this.select.value);
     this.select.close();
   }
 }

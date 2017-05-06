@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, Input, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 
 import { OptionComponent } from './option.component';
 
@@ -11,6 +11,7 @@ import { OptionComponent } from './option.component';
 export class SelectComponent implements OnInit {
   @Input() label: string = 'Choose';
   @Input() multiple: boolean = false;
+  @Output() change = new EventEmitter<string[]>();
 
   expanded: boolean = false;
   toggleId: string;
@@ -29,13 +30,10 @@ export class SelectComponent implements OnInit {
     this.toggleElement = this.elementRef.nativeElement.querySelector('.uz-select-toggle') as HTMLElement;
   }
 
-  @Output()
-  get value(): string[] | string {
-    const values = this.options
+  get value(): string[] {
+    return this.options
       .filter(option => option.selected)
       .map(option => option.value);
-
-    return this.multiple ? values : values[0];
   }
 
   @HostListener('keydown', ['$event'])
