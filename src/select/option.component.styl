@@ -1,0 +1,28 @@
+clr-primary ?= #E97706
+clr-black ?= #2D2D39
+clr-grey-lt ?= #D8D8D8
+clr-grey-dk ?= #757588
+transition-time ?= .2s
+
+:host
+  display block
+
+.uz-option
+  background white
+  border 0
+  cursor pointer
+  display block
+  font-size 1em
+  outline 0
+  padding 12px 20px
+  text-align left
+  transition all transition-time
+  white-space nowrap
+  width 100%
+  &:hover,
+  &:focus
+    background clr-grey-lt
+  &.uz-option-selected
+    background clr-primary
+    color white
+    pointer-events none

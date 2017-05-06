@@ -1,0 +1,18 @@
+<button class="uz-select-toggle"
+        aria-haspopup="true"
+        [attr.id]="toggleId"
+        [attr.aria-expanded]="expanded"
+        [attr.aria-controls]="optionsId"
+        [class.uz-select-open]="expanded"
+        (click)="toggle()">
+  <span>{{toggleText}}</span>
+  <i class="icon-triangle-down uz-select-arrow" role="presentation"></i>
+</button>
+<div class="uz-select-options"
+    role="group"
+    [attr.id]="optionsId"
+    [attr.aria-expanded]="expanded"
+    [attr.aria-labelledby]="toggleId"
+    [hidden]="!expanded">
+  <ng-content></ng-content>
+</div>
