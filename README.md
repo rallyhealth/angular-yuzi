@@ -9,9 +9,9 @@ everyone without sacrificing visual appeal. Angular-yuzi accomplishes this goal 
 ## Features
 
 ### Modal
-The yuzi modal is route-driven. It will add a named router outlet called, "modal". 
+The yuzi modal is route-driven. It will add a named router outlet called "modal". 
 
-At the top of your root component's template add:
+At the top of your root component's template, add:
 ```html
 <uz-modal></uz-modal>
 ```
