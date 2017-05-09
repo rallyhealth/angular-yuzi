@@ -1,7 +1,6 @@
 .idea/
 node_modules/
-dist/*
-!dist/package.json
+dist/
 src/**/*.css
 src/**/*.js
 src/**/*.js.map
