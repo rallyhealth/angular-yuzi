@@ -1,0 +1,62 @@
+clr-primary ?= #E97706
+clr-black ?= #2D2D39
+clr-disabled ?= #A3AFB7
+clr-disabled-lt ?= #EEEFF0
+transition-time ?= .2s
+
+:host
+  display block
+  margin 8px 0
+  width auto
+
+input[type='radio']
+  appearance none
+  display inline-block
+  font-size 1.2em
+  height 1em
+  margin 0
+  opacity 0
+  overflow hidden
+  vertical-align middle
+  width 1em
+  & + label
+    color clr-black
+    font-size 1em
+    padding .2em 0 .2em 4px
+    position relative
+    vertical-align middle
+    &:before
+      background #FFF
+      border 2px solid clr-primary
+      border-radius 50%
+      box-shadow none
+      box-sizing border-box
+      color white
+      content ''
+      display inline-block
+      font-size 1em
+      height 1.2em
+      left calc(-1.2em - 4px)
+      position absolute
+      top 50%
+      transform translateY(calc(-50% + .5px))
+      transition box-shadow transition-time
+      vertical-align middle
+      width 1.2em
+  &:disabled + label
+    color clr-disabled
+    &:before
+      background clr-disabled-lt
+      border-color clr-disabled
+    *
+      vertical-align middle
+
+input[type='radio']
+  &:checked:not(:disabled),
+  &:checked:not(:disabled) + label:before
+    background clr-primary
+
+input[type='radio']
+  &:focus:not(:disabled),
+  &:focus:not(:disabled) + label:before
+    box-shadow 0 0 0 2px clr-primary

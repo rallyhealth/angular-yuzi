@@ -1,0 +1,11 @@
+<input type="checkbox"
+       [id]="id"
+       [name]="name"
+       [value]="checkboxValue"
+       [disabled]="disabled"
+       [(ngModel)]="value"
+       [attr.checked]="checked ? '' : null">
+<label [for]="id">
+  <i class="uz-icon-check" [ngClass]="checkIconClass" aria-hidden="true" *ngIf="checkIconClass"></i>
+  <ng-content></ng-content>
+</label>
