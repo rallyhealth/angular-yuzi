@@ -1,1 +1,2 @@
-*.ngFactory.ts
+*.ngfactory.ts
+*.ngsummary.json

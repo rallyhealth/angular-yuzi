@@ -1,6 +1,6 @@
 {
   "name": "@rally/angular-yuzi",
-  "version": "0.5.1",
+  "version": "0.5.2-1",
   "description": "A fully accessible and customizable common ui library for the web.",
   "author": "Rally Health, Inc.",
   "license": "MIT",
@@ -8,6 +8,10 @@
     "type": "git",
     "url": "https://github.com/rallyhealth/angular-yuzi.git"
   },
+  "publishConfig": {
+    "registry": "https://artifacts.werally.in/artifactory/api/npm/npm-local"
+  },
+  "private": true,
   "homepage": "https://github.com/rallyhealth/angular-yuzi",
   "bugs": {
     "url": "https://github.com/rallyhealth/angular-yuzi/issues"
@@ -24,11 +28,17 @@
   "module": "./src/index.ts",
   "scripts": {
     "build": "npm run ngc && npm run ng-inline && npm run rollup",
-    "clean": "del 'dist/**/!(package.json)' src/**/*.js src/**/*.js.map src/**/*.d.ts src/**/*.css",
-    "copyfiles": "copyfiles README.md src/**/*.css src/**/*.html dist",
+    "clean": "del 'node_modules/**/!(*)' dist src/**/*.js src/**/*.js.map src/**/*.d.ts **/*.ngfactory.ts **/*.ngsummary.json src/**/*.css",
+    "copy:src": "copyfiles README.md src/**/*.css src/**/*.html dist",
+    "copy:package": "copyfiles package.json dist",
     "ng-inline": "ng2-inline -o ./ -r dist/**/*.component.js",
     "ngc": "ngc -p tsconfig.json",
-    "prebuild": "npm run clean && npm run stylus && npm run copyfiles",
+    "package:main": "json -I -f dist/package.json -e 'this.main=\"bundles/yuzi.umd.js\"; this.module=\"src/index.js\"; this.typings=\"src/index.d.ts\"'",
+    "package:deps": "json -I -f dist/package.json -e 'this.peerDependencies=this.dependencies; delete this.dependencies; delete this.devDependencies; delete this.scripts'",
+    "package:public": "json -I -f dist/package.json -e 'this.private=false'",
+    "package": "npm run copy:package && npm run package:main && npm run package:deps && npm run package:public",
+    "prebuild": "npm run clean && npm run stylus && npm run copy:src && npm run package",
+    "publish:build": "npm run build && npm publish dist",
     "rollup": "rollup -c rollup.config.js",
     "stylus": "stylus src/**/*.styl --use jeet"
   },
@@ -50,6 +60,7 @@
     "copyfiles": "^1.2.0",
     "del-cli": "^0.2.1",
     "jeet": "^7.1.0",
+    "json": "^9.0.6",
     "kouto-swiss": "^1.1.0",
     "rollup": "^0.41.6",
     "rollup-plugin-angular-inline": "^1.0.0",

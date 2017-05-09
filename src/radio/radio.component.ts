@@ -16,7 +16,7 @@ export class RadioComponent extends AbstractValueAccessor implements OnInit {
   @Input('value') radioValue: any;
   @Input() checked: boolean;
 
-  private id: string;
+  id: string;
 
   ngOnInit() {
     this.id = `${this.name}-${RadioComponent.instanceNum}`;
