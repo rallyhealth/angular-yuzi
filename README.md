@@ -73,7 +73,7 @@ The yuzi checkbox is simple and familiar. Utilize `ngModel` if you wish to bind 
 <uz-checkbox name="foo" [value]="'bar'" [(ngModel)]="foo">Foo</uz-checkbox>
 ```
 
-### Checkbox
+### Radio
 The yuzi radio is similar to the checkbox, but `ngModel` (like for regular radios) binds to the selected value  
 of the radio "name". 
 ```angular2html
