@@ -24,7 +24,8 @@
   "module": "./src/index.ts",
   "scripts": {
     "build": "npm run ngc && npm run ng-inline && npm run rollup",
-    "clean": "del 'dist/**/!(package.json)' src/**/*.js src/**/*.js.map src/**/*.d.ts src/**/*.css",
+    "clean": "del 'dist/**/!(package.json)' 'node_modules/**/!(*)' src/**/*.js src/**/*.js.map src/**/*.d.ts **/*.ngfactory.ts **/*.ngsummary.json src/**/*.css",
+    "clean:npmignored": "del dist/**/*.ngfactory.ts dist/**/*.ngsummary.json",
     "copyfiles": "copyfiles README.md src/**/*.css src/**/*.html dist",
     "ng-inline": "ng2-inline -o ./ -r dist/**/*.component.js",
     "ngc": "ngc -p tsconfig.json",

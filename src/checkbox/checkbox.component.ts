@@ -18,8 +18,7 @@ export class CheckboxComponent extends AbstractValueAccessor implements OnInit {
   @Input() checked: boolean;
 
   checkIconClass: string;
-
-  private id: string;
+  id: string;
 
   constructor(private icons: IconsService) {
     super();
