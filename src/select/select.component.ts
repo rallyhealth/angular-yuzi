@@ -126,9 +126,12 @@ export class SelectComponent implements OnInit {
 
   private searchForString(e: KeyboardEvent): boolean {
     const k = e.keyCode;
+    const isSpace = k === 32;
+    const isAlphaNumeric = (k >= 48 && k <= 90) || (k >= 96 && k <= 105);
+    const isSpecialCharacter = (k >= 106 && k <= 111) || (k >= 186 && k <= 222);
 
     // If the keyCode is a character
-    if (k === 32 || (k >= 48 && k <= 90) || (k >= 96 && k <= 111) || (k >= 186 && k <= 222)) {
+    if (isSpace || isAlphaNumeric || isSpecialCharacter) {
       // When pressing the same character more than once, cycle through labels that begin with said character
       this.searchString = e.key === this.searchString ? this.searchString : this.searchString + e.key;
 
