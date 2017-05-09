@@ -12,7 +12,7 @@ everyone without sacrificing visual appeal. Angular-yuzi accomplishes this goal 
 The yuzi modal is route-driven. It will add a named router outlet called "modal". 
 
 At the top of your root component's template, add:
-```angular2html
+```html
 <uz-modal></uz-modal>
 ```
 
@@ -32,7 +32,7 @@ To create a new modal route, add the following config object to your routing mod
 ```
 
 To link to this route from your template:
-```angular2html
+```html
 <a [routerLink]="['', { outlets: { modal: ['foobar'] } }]">Click me for modalz</a>
 ```
 
@@ -50,7 +50,7 @@ close() {
 ### Select
 The yuzi select box is keyboard navigable and the syntax should be somewhat familiar to the ordinary select box.
 
-```angular2html
+```html
 <uz-select (change)="selectChanged($event)">
   <uz-option [value]="'superman'" [label]="'Superman'">Superman</uz-option>
   <uz-option [value]="'batman'" [label]="'Batman'">Batman</uz-option>
@@ -60,23 +60,23 @@ The yuzi select box is keyboard navigable and the syntax should be somewhat fami
 </uz-select>
 ```
 
-The change event emitter allows you to capture changes made to the selected option(s).
+The change event emitter allows you to capture changes made to the selected option.
 ```typescript
-selectChanged(value: string[]) {
-  // do something with captured value(s).
+selectChanged(value: any) {
+  // do something with captured value.
 }
 ```
 
 ### Checkbox
 The yuzi checkbox is simple and familiar. Utilize `ngModel` if you wish to bind to the single checkbox boolean value.
-```angular2html
+```html
 <uz-checkbox name="foo" [value]="'bar'" [(ngModel)]="foo">Foo</uz-checkbox>
 ```
 
 ### Radio
 The yuzi radio is similar to the checkbox, but `ngModel` (like for regular radios) binds to the selected value  
 of the radio "name". 
-```angular2html
+```html
 <uz-radio name="foo"
           value="1"
           [(ngModel)]="foo"
