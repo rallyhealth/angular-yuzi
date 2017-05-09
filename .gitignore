@@ -6,5 +6,8 @@ src/**/*.css
 src/**/*.js
 src/**/*.js.map
 src/**/*.d.ts
+*.ngfactory.ts
+*.ngsummary.json
+*.ngstyle.ts
 .DS_Store
 npm-debug.log

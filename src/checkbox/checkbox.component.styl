@@ -1,0 +1,68 @@
+clr-primary ?= #E97706
+clr-black ?= #2D2D39
+clr-disabled ?= #A3AFB7
+clr-disabled-lt ?= #EEEFF0
+transition-time ?= .2s
+
+:host
+  display block
+  margin 8px 0
+  width auto
+
+input[type='checkbox']
+  appearance none
+  display inline-block
+  font-size 1.2em
+  height 1em
+  margin 0
+  opacity 0
+  overflow hidden
+  vertical-align middle
+  width 1em
+  & + label
+    color clr-black
+    font-size 1em
+    padding .2em 0 .2em 4px
+    position relative
+    vertical-align middle
+    &:before,
+    .uz-icon-check
+      color white
+      height 1.2em
+      left calc(-1.2em - 4px)
+      position absolute
+      top 50%
+      transform translateY(calc(-50% + .5px))
+      width 1.2em
+    .uz-icon-check
+      display none
+      padding .1em
+    &:before
+      background #FFF
+      border 2px solid clr-primary
+      box-shadow none
+      box-sizing border-box
+      content ''
+      display inline-block
+      font-size 1em
+      transition box-shadow transition-time
+      vertical-align middle
+  &:disabled + label
+    color clr-disabled
+    &:before
+      background clr-disabled-lt
+      border-color clr-disabled
+    *
+      vertical-align middle
+
+input[type='checkbox']
+  &:checked:not(:disabled),
+  &:checked:not(:disabled) + label:before
+    background clr-primary
+  &:checked + label .uz-icon-check
+    display inline-block
+
+input[type='checkbox']
+  &:focus:not(:disabled),
+  &:focus:not(:disabled) + label:before
+    box-shadow 0 0 0 2px clr-primary
