@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
 
 import { OptionComponent } from './option.component';
 
@@ -12,15 +12,14 @@ export class SelectComponent implements OnInit {
   static instanceNum: number  = 0;
 
   @Input() label: string = 'Choose';
-  @Input() multiple: boolean = false;
-  @Output() change = new EventEmitter<string[]>();
+  @Output() change = new EventEmitter<any>();
+  @ViewChild('toggleButton') toggleButton: ElementRef;
 
   expanded: boolean = false;
   toggleId: string;
   optionsId: string;
   options: OptionComponent[] = [];
 
-  private toggleElement: HTMLElement;
   private searchTimeout: number;
   private searchString: string = '';
 
@@ -30,15 +29,16 @@ export class SelectComponent implements OnInit {
     this.toggleId = `uz-toggle-${SelectComponent.instanceNum}`;
     this.optionsId = `uz-options-${SelectComponent.instanceNum}`;
     this.label = 'foobar';
-    this.toggleElement = this.elementRef.nativeElement.querySelector('.uz-select-toggle') as HTMLElement;
 
     SelectComponent.instanceNum ++;
   }
 
-  get value(): string[] {
-    return this.options
-      .filter(option => option.selected)
-      .map(option => option.value);
+  get value(): any {
+    return typeof this.selected === 'undefined' ? undefined : this.selected.value;
+  }
+
+  get selected(): OptionComponent | undefined {
+    return this.options.find(option => option.selected);
   }
 
   @HostListener('keydown', ['$event'])
@@ -58,8 +58,12 @@ export class SelectComponent implements OnInit {
         break;
       case 32: // space
         if (this.searchString.length) {
+          // purposeful fallthrough in switch
           e.preventDefault();
         } else {
+          setTimeout(() => {
+            if (this.selected) { this.selected.focus(); }
+          }, 200);
           break;
         }
       default:
@@ -68,16 +72,12 @@ export class SelectComponent implements OnInit {
   }
 
   get toggleText(): string {
-    const labels = this.options
-      .filter(option => option.selected)
-      .map(option => option.label || option.value);
-
-    return !labels.length || this.multiple ? this.label : labels[0];
+    return this.selected ? this.selected.label : this.label;
   }
 
   close() {
     this.expanded = false;
-    this.toggleElement.focus();
+    this.toggleButton.nativeElement.focus();
   }
 
   toggle() {
@@ -120,7 +120,7 @@ export class SelectComponent implements OnInit {
   }
 
   private getFocusedIndex(): number {
-    const active = this.options.filter(option => option.button === document.activeElement);
+    const active = this.options.filter(option => option.button.nativeElement === document.activeElement);
     return active.length ? active[0].index : -1;
   }
 
@@ -140,8 +140,7 @@ export class SelectComponent implements OnInit {
         this.searchString = '';
       }, 500);
 
-      const selected = this.options.filter(option => option.selected);
-      const startingIndex = selected.length ? this.options.indexOf(selected[0]) : 0;
+      const startingIndex = typeof this.selected !== 'undefined' ? this.options.indexOf(this.selected) : 0;
       const optionsAfterFocused = this.options.slice(startingIndex + 1);
       const optionsBeforeFocused = this.options.slice(0, startingIndex);
 
@@ -160,7 +159,7 @@ export class SelectComponent implements OnInit {
   private toggleFirstMatchingOption(options: OptionComponent[]): boolean {
     const results = options.filter(option => this.matchingResults(option));
     if (results.length) {
-      results[0].toggle();
+      results[0].select();
     }
 
     return results.length > 0;

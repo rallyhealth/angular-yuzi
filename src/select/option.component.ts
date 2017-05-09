@@ -1,4 +1,4 @@
-import { Component, ElementRef, Host, HostListener, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Host, HostListener, Input, OnInit, ViewChild } from '@angular/core';
 
 import { SelectComponent } from './select.component';
 
@@ -10,25 +10,21 @@ import { SelectComponent } from './select.component';
 
 export class OptionComponent implements OnInit {
   @Input() label: string;
-  @Input() value: string;
+  @Input() value: any;
   @Input() selected: boolean = false;
   @Input() disabled: boolean = false;
+  @ViewChild('button') button: ElementRef;
 
   index: number;
-  button: HTMLElement;
 
-  private select: SelectComponent;
+  private selectComponent: SelectComponent;
 
-  constructor(
-    @Host() select: SelectComponent,
-    private elementRef: ElementRef
-  ) {
-    this.select = select;
+  constructor(@Host() select: SelectComponent) {
+    this.selectComponent = select;
   }
 
   ngOnInit() {
-    this.button = this.elementRef.nativeElement.querySelector('.uz-option') as HTMLElement;
-    this.select.addOption(this);
+    this.selectComponent.addOption(this);
 
     if (typeof this.selected === 'undefined') {
       this.selected = false;
@@ -42,7 +38,7 @@ export class OptionComponent implements OnInit {
     switch (e.keyCode) {
       case 13: // return
       case 32: // space
-        this.toggle();
+        this.select();
         e.preventDefault();
         break;
       default: return;
@@ -50,18 +46,13 @@ export class OptionComponent implements OnInit {
   }
 
   focus() {
-    this.button.focus();
+    this.button.nativeElement.focus();
   }
 
-  toggle() {
-    if (this.select.multiple) {
-      this.selected = !this.selected;
-    } else {
-      this.select.deselectAllOptions();
-      this.selected = true;
-    }
-
-    this.select.change.emit(this.select.value);
-    this.select.close();
+  select() {
+    this.selectComponent.deselectAllOptions();
+    this.selected = true;
+    this.selectComponent.change.emit(this.selectComponent.value);
+    this.selectComponent.close();
   }
 }
