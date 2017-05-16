@@ -1,4 +1,14 @@
-import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  HostBinding,
+  HostListener,
+  Input,
+  OnInit,
+  Output,
+  ViewChild
+} from '@angular/core';
 
 import { OptionComponent } from './option.component';
 
@@ -10,27 +20,36 @@ import { OptionComponent } from './option.component';
 
 export class SelectComponent implements OnInit {
   static instanceNum: number  = 0;
+  @Output() static toggled: EventEmitter<SelectComponent> = new EventEmitter<SelectComponent>();
 
   @Input() label: string = 'Choose';
   @Output() change = new EventEmitter<any>();
   @ViewChild('toggleButton') toggleButton: ElementRef;
 
-  expanded: boolean = false;
+  @HostBinding('class.uz-select-open') expanded: boolean = false;
   toggleId: string;
   optionsId: string;
   options: OptionComponent[] = [];
 
+  private instanceNum: number;
   private searchTimeout: number;
   private searchString: string = '';
 
-  constructor(private elementRef: ElementRef) {}
+  constructor() {}
 
   ngOnInit() {
-    this.toggleId = `uz-toggle-${SelectComponent.instanceNum}`;
-    this.optionsId = `uz-options-${SelectComponent.instanceNum}`;
+    this.instanceNum = SelectComponent.instanceNum;
+    this.toggleId = `uz-toggle-${this.instanceNum}`;
+    this.optionsId = `uz-options-${this.instanceNum}`;
     this.label = 'foobar';
 
     SelectComponent.instanceNum ++;
+
+    SelectComponent.toggled.subscribe((select: SelectComponent) => {
+      if (select.toggleId !== this.toggleId) {
+        this.expanded = false;
+      }
+    });
   }
 
   get value(): any {
@@ -56,18 +75,44 @@ export class SelectComponent implements OnInit {
         this.close();
         e.preventDefault();
         break;
+      case 9: // tab
+        // If the user is tabbing out of the options menu, close the select dropdown
+        if ((!e.shiftKey && this.getFocusedIndex() === this.options[this.options.length - 1].index) ||
+          (e.shiftKey && this.getFocusedIndex() === 0)) {
+          this.expanded = false;
+        }
+        break;
       case 32: // space
         if (this.searchString.length) {
           // purposeful fallthrough in switch
           e.preventDefault();
         } else {
           setTimeout(() => {
-            if (this.selected) { this.selected.focus(); }
+            if (this.selected && this.expanded) { this.selected.focus(); }
           }, 200);
           break;
         }
       default:
         this.searchForString(e);
+    }
+  }
+
+  @HostListener('body:mouseup', ['$event'])
+  bodyMouseup(event: MouseEvent) {
+    if (!this.expanded) { return; }
+
+    let clickedElement = event.target as HTMLElement;
+    let inSelect = false;
+
+    do {
+      if (clickedElement === this.toggleButton.nativeElement) {
+        inSelect = true;
+      }
+      clickedElement = clickedElement.parentNode as HTMLElement;
+    } while (clickedElement);
+
+    if (!inSelect) {
+      this.expanded = false;
     }
   }
 
@@ -82,6 +127,7 @@ export class SelectComponent implements OnInit {
 
   toggle() {
     this.expanded = !this.expanded;
+    SelectComponent.toggled.emit(this);
   }
 
   addOption(option: OptionComponent) {
@@ -99,11 +145,14 @@ export class SelectComponent implements OnInit {
     const focusedIndex = this.getFocusedIndex();
     const lastIndex = this.options.length - 1;
     e.preventDefault();
-    this.expanded = true;
+
+    if (!this.expanded) {
+      this.toggle();
+    }
 
     if (focusedIndex < lastIndex) {
       const nextOption = this.options[focusedIndex + 1];
-      setTimeout(() => nextOption.focus());
+      setTimeout(() => nextOption.focus(), 50);
     }
   }
 

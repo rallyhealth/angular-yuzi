@@ -6,8 +6,20 @@ transition-time ?= .2s
 
 :host
   display inline-block
+  perspective 500px
+  perspective-origin top
   position relative
   text-align left
+  z-index 1
+  &.uz-select-open
+    z-index 2
+    .uz-select-arrow
+      top calc(50% + 2px)
+      transform rotate(180deg)
+    .uz-select-options
+      opacity 1
+      transform rotateX(0)
+      visibility visible
 
 .uz-select-toggle
   background white
@@ -29,9 +41,6 @@ transition-time ?= .2s
     border-color clr-primary
     box-shadow 0 0 0 1px clr-primary
     outline 0
-  &.uz-select-open .uz-select-arrow
-    top calc(50% + 2px)
-    transform rotate(180deg)
 
 .uz-select-arrow
   display inline-block
@@ -44,8 +53,16 @@ transition-time ?= .2s
   transition all transition-time
 
 .uz-select-options
+  backface-visibility hidden
   border 1px solid clr-primary
+  box-sizing border-box
   left 0
   min-width 100%
+  opacity 0
   position absolute
-  z-index 1
+  transform rotateX(-90deg)
+  transform-origin 100% 0
+  transform-style preserve-3d
+  transition transition-time
+  visibility hidden
+  z-index 2
