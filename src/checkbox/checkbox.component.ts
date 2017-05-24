@@ -16,6 +16,7 @@ export class CheckboxComponent extends AbstractValueAccessor implements OnInit {
   @Input() name: string;
   @Input('value') checkboxValue: any;
   @Input() checked: boolean;
+  @Input() disabled: boolean;
 
   checkIconClass: string;
   id: string;
@@ -27,7 +28,6 @@ export class CheckboxComponent extends AbstractValueAccessor implements OnInit {
 
   ngOnInit() {
     this.id = `${this.name}-${CheckboxComponent.instanceNum}`;
-
     CheckboxComponent.instanceNum ++;
   }
 }
