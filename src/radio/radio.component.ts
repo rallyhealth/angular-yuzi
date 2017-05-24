@@ -20,7 +20,6 @@ export class RadioComponent extends AbstractValueAccessor implements OnInit {
 
   ngOnInit() {
     this.id = `${this.name}-${RadioComponent.instanceNum}`;
-
     RadioComponent.instanceNum ++;
   }
 }
