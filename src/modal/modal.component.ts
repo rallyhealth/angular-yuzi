@@ -1,22 +1,19 @@
-import { AfterViewChecked, Component, ElementRef, HostListener, OnInit } from '@angular/core';
-import { ActivatedRouteSnapshot, Router, RoutesRecognized } from '@angular/router';
-import { ModalService, ModalStatus } from './modal.service';
+import { AfterViewInit, Component, ElementRef, HostListener, Input } from '@angular/core';
 
 @Component({
   selector: 'uz-modal',
-  exportAs: 'uzModal',
   styleUrls: ['./modal.component.css'],
   templateUrl: './modal.component.html'
 })
 
-export class ModalComponent implements OnInit, AfterViewChecked {
+export class ModalComponent implements AfterViewInit {
 
   /**
    * Gets all tab-able elements from within an HTML node
    * @param parent - topmost node to search within
    * @returns {HTMLElement[]}
    */
-  private static getTabElements(parent?: HTMLElement): HTMLElement[] {
+  protected static getTabElements(parent?: HTMLElement): HTMLElement[] {
     parent = parent || document.body;
     const possibilities = 'a[href], area[href], input:not([disabled]), select:not([disabled]), ' +
       'textarea:not([disabled]), button:not([disabled]), iframe, object, embed, *[tabindex], *[contenteditable]';
@@ -31,55 +28,35 @@ export class ModalComponent implements OnInit, AfterViewChecked {
    * @param elements
    * @returns {HTMLElement[]}
    */
-  private static filterVisibleElements(elements: HTMLElement[]): HTMLElement[] {
+  protected static filterVisibleElements(elements: HTMLElement[]): HTMLElement[] {
     return elements.filter(element => element.offsetWidth > 0 || element.offsetHeight > 0);
   }
 
-  title: string;
+  @Input() title: string;
+  @Input() fullscreen: boolean;
+
   closing: boolean;
   closed: boolean = true;
-  fullscreen: boolean;
 
-  private newModalDetected: boolean;
-  private previouslyFocusedElement: HTMLElement;
-  private route: ActivatedRouteSnapshot;
+  protected previouslyFocusedElement: HTMLElement;
 
-  constructor(
-    private elementRef: ElementRef,
-    private modalService: ModalService,
-    private router: Router
-  ) {}
+  constructor(protected elementRef: ElementRef) {}
 
-  ngOnInit() {
-    // Monitor when the modal secondary outlet is loaded
-    this.router.events
-      .filter(event => event instanceof RoutesRecognized)
-      .flatMap((event: RoutesRecognized) => event.state.root.children)
-      .do((snapshot: ActivatedRouteSnapshot) => this.closed = snapshot.outlet !== 'modal')
-      .filter(snapshot => snapshot.outlet === 'modal')
-      .do(snapshot => {
-        const hasRouteData = (prop: string) =>
-        snapshot.data && snapshot.data.modal && typeof snapshot.data.modal[prop] !== 'undefined';
-
-        this.newModalDetected = true;
-        this.title = hasRouteData('title') ? snapshot.data.modal.title : undefined;
-        this.fullscreen = hasRouteData('fullscreen') ? snapshot.data.modal.fullscreen : false;
-        this.route = snapshot;
-      })
-      .subscribe();
-
-    this.modalService.statusChange.subscribe(status => {
-      if (status === ModalStatus.Closed) {
-        this.close();
-      }
-    });
+  ngAfterViewInit() {
+    this.previouslyFocusedElement = document.activeElement as HTMLElement;
+    this.setFirstFocus();
   }
 
-  ngAfterViewChecked() {
-    if (this.newModalDetected) {
-      this.previouslyFocusedElement = document.activeElement as HTMLElement;
-      this.setFirstFocus();
-      this.newModalDetected = false;
+  get active(): boolean {
+    return !this.closed;
+  }
+
+  @Input()
+  set active(active) {
+    if (active) {
+      this.closed = false;
+    } else {
+      this.close();
     }
   }
 
@@ -87,11 +64,8 @@ export class ModalComponent implements OnInit, AfterViewChecked {
     this.closing = true;
     this.previouslyFocusedElement.focus();
     setTimeout(() => {
-      this.router.navigate([{ outlets: { modal: null } }], { queryParams: this.route.queryParams })
-        .then(() => {
-          this.closed = true;
-          this.closing = false;
-        });
+      this.closed = true;
+      this.closing = false;
     }, 400);
   }
 
@@ -129,7 +103,7 @@ export class ModalComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  private setFirstFocus() {
+  protected setFirstFocus() {
     const element = this.elementRef.nativeElement;
     const autoFocusElements: HTMLElement[] = [].slice.call(element.querySelectorAll('*[autofocus]'));
 
@@ -140,7 +114,7 @@ export class ModalComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  private trapFocus(event: KeyboardEvent) {
+  protected trapFocus(event: KeyboardEvent) {
     const modal = this.elementRef.nativeElement;
     const tabElements = ModalComponent.getTabElements(modal);
     const firstTab = tabElements[0];
@@ -156,7 +130,7 @@ export class ModalComponent implements OnInit, AfterViewChecked {
   }
 
   // Angular 4's renderer no longer supports invokeElementMethod, so we need to set focus another way
-  private setFocus(element: HTMLElement) {
+  protected setFocus(element: HTMLElement) {
     setTimeout(() => element.focus(), 100);
   }
 }
