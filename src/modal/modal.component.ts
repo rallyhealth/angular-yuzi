@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, HostListener, Input } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'uz-modal',
@@ -34,6 +34,7 @@ export class ModalComponent implements AfterViewInit {
 
   @Input() title: string;
   @Input() fullscreen: boolean;
+  @Output() activeChange = new EventEmitter();
 
   closing: boolean;
   closed: boolean = true;
@@ -55,18 +56,23 @@ export class ModalComponent implements AfterViewInit {
   set active(active) {
     if (active) {
       this.closed = false;
+    } else if (this.previouslyFocusedElement) {
+      this.closing = true;
+      this.previouslyFocusedElement.focus();
+      setTimeout(() => {
+        this.closed = true;
+        this.closing = false;
+      }, 400);
     } else {
-      this.close();
+      this.closed = true;
+      this.closing = false;
     }
+
+    this.activeChange.emit(active);
   }
 
   close() {
-    this.closing = true;
-    this.previouslyFocusedElement.focus();
-    setTimeout(() => {
-      this.closed = true;
-      this.closing = false;
-    }, 400);
+    this.active = false;
   }
 
   @HostListener('document:keydown', ['$event'])
