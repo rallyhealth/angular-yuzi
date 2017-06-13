@@ -2,6 +2,7 @@ clr-primary ?= #E97706
 clr-black ?= #2D2D39
 clr-grey-lt ?= #D8D8D8
 clr-grey-dk ?= #757588
+clr-disabled ?= #A3AFB7
 transition-time ?= .2s
 
 :host
@@ -41,6 +42,9 @@ transition-time ?= .2s
     border-color clr-primary
     box-shadow 0 0 0 1px clr-primary
     outline 0
+  &.disabled
+    pointer-events none
+    color clr-disabled
 
 .uz-select-arrow
   display inline-block
@@ -57,8 +61,10 @@ transition-time ?= .2s
   border 1px solid clr-primary
   box-sizing border-box
   left 0
+  max-height 200px
   min-width 100%
   opacity 0
+  overflow-y auto
   position absolute
   transform rotateX(-90deg)
   transform-origin 100% 0

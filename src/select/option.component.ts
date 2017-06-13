@@ -1,4 +1,4 @@
-import { Component, ElementRef, Host, HostListener, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Host, HostListener, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 
 import { SelectComponent } from './select.component';
 
@@ -8,15 +8,13 @@ import { SelectComponent } from './select.component';
   templateUrl: './option.component.html'
 })
 
-export class OptionComponent implements OnInit {
-  @Input() label: string;
+export class OptionComponent implements OnInit, OnDestroy {
   @Input() value: any;
-  @Input() selected: boolean = false;
   @Input() disabled: boolean = false;
   @ViewChild('button') button: ElementRef;
 
-  index: number;
-
+  private _selected: boolean = false;
+  private _label: string;
   private selectComponent: SelectComponent;
 
   constructor(@Host() select: SelectComponent) {
@@ -33,6 +31,10 @@ export class OptionComponent implements OnInit {
     }
   }
 
+  ngOnDestroy() {
+    this.selectComponent.removeOption(this);
+  }
+
   @HostListener('keydown', ['$event'])
   keydown(e: KeyboardEvent) {
     switch (e.keyCode) {
@@ -41,7 +43,8 @@ export class OptionComponent implements OnInit {
         this.select();
         e.preventDefault();
         break;
-      default: return;
+      default:
+        return;
     }
   }
 
@@ -50,9 +53,34 @@ export class OptionComponent implements OnInit {
   }
 
   select() {
-    this.selectComponent.deselectAllOptions();
     this.selected = true;
     this.selectComponent.change.emit(this.selectComponent.value);
     this.selectComponent.close();
+  }
+
+  @Input()
+  set label(label: any) {
+    this._label = label;
+  }
+
+  get label(): any {
+    return typeof this._label !== 'undefined' ? this._label : this.button.nativeElement.textContent;
+  }
+
+  @Input()
+  set selected(selected: boolean) {
+    if (selected) {
+      this.selectComponent.deselectAllOptions();
+    }
+
+    this._selected = selected;
+  }
+
+  get selected(): boolean {
+    return this._selected;
+  }
+
+  get index(): number {
+    return this.selectComponent.options.indexOf(this);
   }
 }

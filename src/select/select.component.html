@@ -3,8 +3,11 @@
         aria-haspopup="true"
         #toggleButton
         [attr.id]="toggleId"
+        [class.disabled]="disabled"
+        [attr.aria-disabled]="disabled"
         [attr.aria-expanded]="expanded"
         [attr.aria-controls]="optionsId"
+        [attr.tabIndex]="disabled ? -1 : 0"
         (click)="toggle()">
   <span>{{toggleText}}</span>
   <i class="icon-triangle-down uz-select-arrow" role="presentation"></i>
