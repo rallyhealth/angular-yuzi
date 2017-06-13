@@ -1,14 +1,4 @@
-import {
-  Component,
-  ElementRef,
-  EventEmitter,
-  HostBinding,
-  HostListener,
-  Input,
-  OnInit,
-  Output,
-  ViewChild
-} from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostBinding, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
 
 import { OptionComponent } from './option.component';
 
@@ -22,7 +12,8 @@ export class SelectComponent implements OnInit {
   static instanceNum: number  = 0;
   @Output() static toggled: EventEmitter<SelectComponent> = new EventEmitter<SelectComponent>();
 
-  @Input() label: string = 'Choose';
+  @Input() label: string = '--';
+  @Input() disabled: boolean;
   @Output() change = new EventEmitter<any>();
   @ViewChild('toggleButton') toggleButton: ElementRef;
 
@@ -41,7 +32,6 @@ export class SelectComponent implements OnInit {
     this.instanceNum = SelectComponent.instanceNum;
     this.toggleId = `uz-toggle-${this.instanceNum}`;
     this.optionsId = `uz-options-${this.instanceNum}`;
-    this.label = 'foobar';
 
     SelectComponent.instanceNum ++;
 
@@ -131,8 +121,15 @@ export class SelectComponent implements OnInit {
   }
 
   addOption(option: OptionComponent) {
-    option.index = this.options.length;
     this.options.push(option);
+    option.selected = option.index === 0  || option.selected;
+  }
+
+  removeOption(option: OptionComponent) {
+    const index = option.index;
+    if (index > -1) {
+      this.options.splice(index, 1);
+    }
   }
 
   deselectAllOptions() {
@@ -189,7 +186,7 @@ export class SelectComponent implements OnInit {
         this.searchString = '';
       }, 500);
 
-      const startingIndex = typeof this.selected !== 'undefined' ? this.options.indexOf(this.selected) : 0;
+      const startingIndex = typeof this.selected !== 'undefined' ? this.selected.index : 0;
       const optionsAfterFocused = this.options.slice(startingIndex + 1);
       const optionsBeforeFocused = this.options.slice(0, startingIndex);
 
