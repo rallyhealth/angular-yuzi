@@ -8,3 +8,4 @@ export { SelectModule } from './select/select.module';
 export { IconsService } from './shared/icons.service';
 export { ModalService } from './modal/modal.service';
 
+export { ModalRoute } from './modal/modal-route.component';
