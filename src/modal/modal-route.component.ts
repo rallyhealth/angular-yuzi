@@ -4,7 +4,7 @@ import { ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
 import { ModalComponent } from './modal.component';
 import { ModalService, ModalStatus } from './modal.service';
 
-export interface ModalRouteComponent extends Component {
+export interface ModalRoute extends Component {
   uzModalTitle: string;
   uzModalFullscreen: boolean;
 }
@@ -58,7 +58,7 @@ export class ModalRouteComponent extends ModalComponent implements OnInit {
     });
   }
 
-  activated(component: ModalRouteComponent) {
+  activated(component: ModalRoute) {
     this.closed = false;
     this.title = component.uzModalTitle;
     this.fullscreen = component.uzModalFullscreen || false;
@@ -66,7 +66,7 @@ export class ModalRouteComponent extends ModalComponent implements OnInit {
     this.setFirstFocus();
   }
 
-  deactivated(component: ModalRouteComponent) {
+  deactivated(component: ModalRoute) {
     this.closed = true;
     this.closing = false;
   }
