@@ -14,7 +14,7 @@
       </div>
     </header>
     <div class="uz-modal-body" aria-labeledby="uz-modal-header">
-      <router-outlet name="modal"></router-outlet>
+      <router-outlet name="modal" (activate)="activated($event)" (deactivate)="deactivated($event)"></router-outlet>
     </div>
   </div>
 </div>

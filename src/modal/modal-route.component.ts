@@ -1,8 +1,13 @@
-import { AfterViewChecked, Component, ElementRef, OnInit } from '@angular/core';
-import { ActivatedRouteSnapshot, Router, RoutesRecognized } from '@angular/router';
+import { Component, ElementRef, OnInit } from '@angular/core';
+import { ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
 
 import { ModalComponent } from './modal.component';
 import { ModalService, ModalStatus } from './modal.service';
+
+export interface ModalRouteComponent extends Component {
+  uzModalTitle: string;
+  uzModalFullscreen: boolean;
+}
 
 @Component({
   selector: 'uz-modal-route',
@@ -10,9 +15,22 @@ import { ModalService, ModalStatus } from './modal.service';
   templateUrl: './modal-route.component.html'
 })
 
-export class ModalRouteComponent extends ModalComponent implements OnInit, AfterViewChecked {
+export class ModalRouteComponent extends ModalComponent implements OnInit {
+  private static hasPreviousRoute(prev?: NavigationEnd): boolean {
+    // Short-circuit this block if someone opens this link in a new tab from a link
+    if (window.history.length <= 1) {
+      return false;
+    }
 
-  private newModalDetected: boolean;
+    const refreshed = window.performance.navigation.type === window.performance.navigation.TYPE_RELOAD;
+    const localReferrer = !!document.referrer && document.referrer.indexOf(window.location.hostname) > -1;
+
+    return (prev && typeof prev.url !== 'undefined' && prev.url.indexOf('(modal:') === -1) || // from a previous non-modal route
+      (!document.referrer && refreshed) || // user refreshes on a modal route
+      localReferrer; // user navigates to a modal route from somewhere else on the same domain
+  }
+
+  private hasPreviousRoute = false;
   private route: ActivatedRouteSnapshot;
 
   constructor(
@@ -24,20 +42,12 @@ export class ModalRouteComponent extends ModalComponent implements OnInit, After
   }
 
   ngOnInit() {
-    // Monitor when the modal secondary outlet is loaded
     this.router.events
-      .filter(event => event instanceof RoutesRecognized)
-      .flatMap((event: RoutesRecognized) => event.state.root.children)
-      .do((snapshot: ActivatedRouteSnapshot) => this.closed = snapshot.outlet !== 'modal')
-      .filter(snapshot => snapshot.outlet === 'modal')
-      .do(snapshot => {
-        const hasRouteData = (prop: string) =>
-        snapshot.data && snapshot.data.modal && typeof snapshot.data.modal[prop] !== 'undefined';
-
-        this.newModalDetected = true;
-        this.title = hasRouteData('title') ? snapshot.data.modal.title : undefined;
-        this.fullscreen = hasRouteData('fullscreen') ? snapshot.data.modal.fullscreen : false;
-        this.route = snapshot;
+      .filter(event => event instanceof NavigationEnd)
+      .do(() => this.hasPreviousRoute = ModalRouteComponent.hasPreviousRoute())
+      .pairwise()
+      .do(([prev, next]) => {
+        this.hasPreviousRoute = ModalRouteComponent.hasPreviousRoute(prev as NavigationEnd);
       })
       .subscribe();
 
@@ -48,25 +58,28 @@ export class ModalRouteComponent extends ModalComponent implements OnInit, After
     });
   }
 
-  ngAfterViewInit() {}
+  activated(component: ModalRouteComponent) {
+    this.closed = false;
+    this.title = component.uzModalTitle;
+    this.fullscreen = component.uzModalFullscreen || false;
+    this.previouslyFocusedElement = document.activeElement as HTMLElement;
+    this.setFirstFocus();
+  }
 
-  ngAfterViewChecked() {
-    if (this.newModalDetected) {
-      this.previouslyFocusedElement = document.activeElement as HTMLElement;
-      this.setFirstFocus();
-      this.newModalDetected = false;
-    }
+  deactivated(component: ModalRouteComponent) {
+    this.closed = true;
+    this.closing = false;
   }
 
   close() {
     this.closing = true;
     this.previouslyFocusedElement.focus();
     setTimeout(() => {
-      this.router.navigate([{ outlets: { modal: null } }], { queryParams: this.route.queryParams })
-        .then(() => {
-          this.closed = true;
-          this.closing = false;
-        });
+      if (this.hasPreviousRoute) {
+        window.history.back();
+      } else {
+        this.router.navigate([{ outlets: { modal: null } }], { queryParamsHandling: 'merge', replaceUrl: true });
+      }
     }, 400);
   }
 }

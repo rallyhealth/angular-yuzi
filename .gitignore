@@ -11,3 +11,4 @@ src/**/*.d.ts
 *.metadata.json
 .DS_Store
 npm-debug.log
+.npmrc
