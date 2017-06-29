@@ -1,7 +1,7 @@
 # angular-yuzi
 Yuzi is an open source UI library, focused around stylish usability for the web. There are plenty of UI libraries out
 there, but not all of them are optimized for accessibility. The goal of yuzi is provide a slick user experience for
-everyone without sacrificing visual appeal. Angular-yuzi accomplishes this goal for projects using the AngularJS framework.
+everyone without sacrificing visual appeal. Angular-yuzi accomplishes this goal for projects using the Angular framework.
 
 ## Installation
 `npm install @rally/angular-yuzi --save`
