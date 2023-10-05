@@ -18,7 +18,15 @@ We have some general guidelines towards contributing to this project.
 
 ### Languages
 
-*Lua*
+#### Primary Language
+
+*Typescript*
+
+#### Additional Languages
+
+- *Stylus*
+- *HTML*
+- *Javascript*
 
 ## Pull Requests
 
